@@ -7,20 +7,6 @@ import { TokenService } from './JWTService'
 export class TagService {
   constructor(@Inject(TokenService) private readonly tokenService: TokenService) {}
 
-  // async listTag(query: TagQuery, userId: string) {
-  //   const userJWT = this.tokenService.get(userId)
-
-  //   const result = await axios.get(`${AssinModule.config.apiPath}/tags`, {
-  //     headers: {
-  //       Accept: 'application/json',
-  //       Authorization: `Bearer ${userJWT}`,
-  //     },
-  //     params: query,
-  //   })
-
-  //   return result.data
-  // }
-
   async createTag(body: Array<CreateTagData>, userId?: string) {
     const userJWT = this.tokenService.get(userId)
 
