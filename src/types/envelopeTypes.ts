@@ -1,3 +1,26 @@
+export enum EnvelopStatus {
+  WAITING = 'WAITING_SIGNATURE',
+  COMPLETED = 'COMPLETED',
+  CANCELED = 'CANCELED',
+  DRAFT = 'DRAFT',
+  ERROR = 'ERROR',
+
+  GENERATING_SIGNATURE = 'GENERATING_SIGNATURE',
+  CREATED = 'CREATED',
+}
+
+export type EnvelopeEntity = {
+  id: string
+  userId: string
+  companyId: string
+  title: string
+  description: string
+  status: EnvelopStatus
+  expiredAt: string
+  createdAt: string
+  updatedAt: string
+}
+
 export type CreateEnvelopeData = {
   title: string
   description: string

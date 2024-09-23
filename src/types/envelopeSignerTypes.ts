@@ -1,3 +1,36 @@
+export enum SignatureStatus {
+  REJECTED = 'reject',
+  SIGNED = 'signed',
+  COMPLETED = 'completed',
+  PENDING = 'pending',
+}
+
+export enum SignatureType {
+  PARTY = 'party',
+  APPROVER = 'approver',
+  WITNESS = 'witness',
+  CLIENT = 'client',
+  SELLER = 'seller',
+  MANAGER = 'manager',
+  ACKNOWLEDGE = 'acknowledge',
+  ACKNOWLEDGE_RECEIPT = 'acknowledge_receipt',
+}
+
+export type EnvelopeSignerEntity = {
+  envelopeId: string
+  signerId: string
+  order: number
+  signatureType: string
+  requirePersonalDocument: boolean
+  requireEmailToken: boolean
+  requireRubric: boolean
+  requireSignature: boolean
+  status: SignatureType
+  log: string
+  createdAt: string
+  updatedAt: string
+}
+
 export type EnvelopeSignerQuery = {
   filters?: {
     signerId: string

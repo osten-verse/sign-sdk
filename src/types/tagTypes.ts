@@ -7,6 +7,21 @@ enum ElementType {
   SELECTION_BOX = 'SELECTION_BOX',
 }
 
+export type TagEntity = {
+  id: string
+  envelopeSignerId: string
+  envelopeDocumentId: string
+  envelopeId: string
+  angle: number
+  elementType: ElementType
+  content: string
+  axisX: number
+  axisY: number
+  page: number
+  createdAt: string
+  updatedAt: string
+}
+
 export type TagQuery = {
   filters?: {
     id: string
