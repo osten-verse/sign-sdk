@@ -10,15 +10,15 @@ export enum EnvelopStatus {
 }
 
 export type EnvelopeEntity = {
-  id: string
-  userId: string
-  companyId: string
-  title: string
-  description: string
-  status: EnvelopStatus
-  expiredAt: string
-  createdAt: string
-  updatedAt: string
+  id?: string
+  userId?: string
+  companyId?: string
+  title?: string
+  description?: string
+  status?: EnvelopStatus
+  expiredAt?: string
+  createdAt?: string
+  updatedAt?: string
 }
 
 export type CreateEnvelopeData = {
@@ -36,17 +36,15 @@ export type CancelEnvelopeData = {
 }
 
 export type EnvelopeQuery = {
-  filters?: {
-    id: string
-    userId: string
-    companyId: string
-    title: string
-    description: string
-    status: string
-    expiredAt: string
-    createdAt: string
-    updatedAt: string
-  }
+  id?: string
+  userId?: string
+  companyId?: string
+  title?: string
+  description?: string
+  status?: string
+  expiredAt?: string
+  createdAt?: string
+  updatedAt?: string
   includes?: Array<string>
   sortBy?: {
     id?: 'DESC' | 'ASC'

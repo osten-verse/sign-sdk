@@ -11,7 +11,7 @@ export class Request {
     this.apiPath = apiPath
   }
 
-  async get(path: string, params: any, optional?: { userId: string }) {
+  async get(path: string, params: any, optional?: { userId?: string }) {
     try {
       const userJWT = this.jwt.get(optional.userId)
       const result = await axios.get(`${this.apiPath}/${path}`, {

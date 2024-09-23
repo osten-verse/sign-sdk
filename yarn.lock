@@ -410,6 +410,11 @@
   resolved "https://registry.yarnpkg.com/@duaneoli/logger/-/logger-0.2.2.tgz#f7806bc6595a5b3dc36b36647a49e0f698ae7ede"
   integrity sha512-HYqbeNsB3sFJ900P6Gf2T609JW53UtgC7ld7+X/PVWCbna0S2AkkXTbh3bwegRyPzURcV95UJR4ZlmPBB3W15w==
 
+"@duaneoli/typeorm-nest-joi-parse@^0.2.2":
+  version "0.2.2"
+  resolved "https://registry.yarnpkg.com/@duaneoli/typeorm-nest-joi-parse/-/typeorm-nest-joi-parse-0.2.2.tgz#560bf09b24b4709c157983d0547ca7be23417ccc"
+  integrity sha512-8ESX+AljpvOPzQ3JT0zcUfuU8orjMybwGK+8IrwmjLaW3AmOsbm9/nt0/iZI/Nl5DvoGsqePiN1rwfXpDKa33w==
+
 "@eslint-community/eslint-utils@^4.2.0", "@eslint-community/eslint-utils@^4.4.0":
   version "4.4.0"
   resolved "https://registry.yarnpkg.com/@eslint-community/eslint-utils/-/eslint-utils-4.4.0.tgz#a23514e8fb9af1269d5f7788aa556798d61c6b59"

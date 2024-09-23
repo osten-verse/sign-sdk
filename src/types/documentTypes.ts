@@ -1,15 +1,25 @@
+export type DocumentsEntity = {
+  id: string
+  envelopId: string
+  userId: string
+  companyId: string
+  alias: string
+  url: string
+  createdFrom: string
+  createdAt: string
+  updatedAt: string
+}
+
 export type DocumentQuery = {
-  filters?: {
-    id: string
-    envelopId: string
-    userId: string
-    companyId: string
-    alias: string
-    url: string
-    createdFrom: string
-    createdAt: string
-    updatedAt: string
-  }
+  id?: string
+  envelopId?: string
+  userId?: string
+  companyId?: string
+  alias?: string
+  url?: string
+  createdFrom?: string
+  createdAt?: string
+  updatedAt?: string
   includes?: Array<string>
   sortBy?: {
     id: 'DESC' | 'ASC'

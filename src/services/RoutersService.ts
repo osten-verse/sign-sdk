@@ -1,3 +1,4 @@
+import { Query } from '@duaneoli/typeorm-nest-joi-parse'
 import { Request } from '../helpers/AxiosRequest'
 import { CreateAndRemoveEnvelopeDocumentType } from '../types/envelopeDocumentTypes'
 import {
@@ -5,17 +6,54 @@ import {
   DeleteEnvelopeSignerData,
   ResendNotificationEnvelopeSigner,
 } from '../types/envelopeSignerTypes'
-import { CancelEnvelopeData, CloseEnvelopeData, CreateEnvelopeData, EnvelopeQuery } from '../types/envelopeTypes'
+import { CancelEnvelopeData, CloseEnvelopeData, CreateEnvelopeData, EnvelopeEntity } from '../types/envelopeTypes'
 import { CreateTagData, DeleteTagData } from '../types/tagTypes'
-import { CreateDocumentData, DocumentQuery } from './../types/documentTypes'
+import { CreateDocumentData, DocumentsEntity } from './../types/documentTypes'
 
 export class Routers extends Request {
   constructor(publicKey: string, defaultUserId: string, secretKey: string, apiPath?: string) {
     super(publicKey, defaultUserId, secretKey, apiPath)
   }
 
-  async listEnvelope(query?: EnvelopeQuery, userId?: string) {
-    return this.get('envelope', query, { userId })
+  async listEnvelope(
+    params: {
+      query?: Query<EnvelopeEntity>
+      includes: Array<string>
+      page?: number
+      pageSize?: number
+    },
+    options?: {
+      userId?: string
+    },
+  ) {
+    return this.get(
+      'envelope',
+      {
+        filters: params?.query.filters.stringify().replace('filters=', ''),
+        sortBy: params?.query.sortBy.stringify().replace('sortBy=', ''),
+        includes: params?.includes,
+        page: params?.page,
+        pageSize: params?.pageSize,
+      } as any,
+      options,
+    )
+  }
+
+  async getEnvelopeById(
+    params: {
+      query?: Query<{ id: string }>
+    },
+    options?: {
+      userId?: string
+    },
+  ) {
+    return this.get(
+      'envelope',
+      {
+        filters: params?.query.filters.stringify().replace('filters=', ''),
+      } as any,
+      options,
+    )
   }
 
   async createEnvelope(body: Array<CreateEnvelopeData>, userId?: string) {
@@ -33,8 +71,29 @@ export class Routers extends Request {
   async createAndRemoveDocument(method: 'set' | 'remove', body: CreateAndRemoveEnvelopeDocumentType, userId?: string) {
     return this.post(`envelope/${method}/document`, body, { userId })
   }
-  async listDocument(query?: DocumentQuery, userId?: string) {
-    return this.get('documents', query, { userId })
+
+  async listDocument(
+    params: {
+      query?: Query<DocumentsEntity>
+      includes: Array<string>
+      page?: number
+      pageSize?: number
+    },
+    options?: {
+      userId?: string
+    },
+  ) {
+    return this.get(
+      'documents',
+      {
+        filters: params?.query.filters.stringify().replace('filters=', ''),
+        sortBy: params?.query.sortBy.stringify().replace('sortBy=', ''),
+        includes: params?.includes,
+        page: params?.page,
+        pageSize: params?.pageSize,
+      } as any,
+      options,
+    )
   }
 
   async createDocument(body: Array<CreateDocumentData>, userId?: string) {
@@ -54,7 +113,7 @@ export class Routers extends Request {
   }
 
   async createTag(body: Array<CreateTagData>, userId?: string) {
-    return this.get('tags', body, { userId })
+    return this.post('tags', body, { userId })
   }
 
   async deleteTag(body: Array<DeleteTagData>, userId?: string) {
