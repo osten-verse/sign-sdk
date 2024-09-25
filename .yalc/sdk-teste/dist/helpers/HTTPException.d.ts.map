@@ -1,0 +1,1 @@
+{"version":3,"file":"HTTPException.d.ts","sourceRoot":"","sources":["../../src/helpers/HTTPException.ts"],"names":[],"mappings":"AAAA,qBAAa,aAAc,SAAQ,KAAK;IACtC,MAAM,EAAE,MAAM,CAAA;gBACF,OAAO,EAAE,MAAM,EAAE,MAAM,EAAE,MAAM;CAI5C"}

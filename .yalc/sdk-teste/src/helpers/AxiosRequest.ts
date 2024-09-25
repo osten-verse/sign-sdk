@@ -11,60 +11,21 @@ export class Request {
     this.apiPath = apiPath
   }
 
-  async get(path: string, params: any = {}, optional?: { userId?: string; tokenParams?: string }) {
+  async get(path: string, params: any, optional?: { userId?: string }) {
     try {
-      const userJWT = this.jwt.get(optional?.userId)
-      const headers: any = {
-        Accept: 'application/json',
-        Authorization: `Bearer ${userJWT}`,
-      }
-
-      if (optional?.tokenParams) {
-        headers['x-dynamic-authorization'] = optional.tokenParams
-      }
-
+      const userJWT = this.jwt.get(optional.userId)
       const result = await axios.get(`${this.apiPath}/${path}`, {
-        headers,
-        params: !optional?.tokenParams ? params : undefined,
+        headers: {
+          Accept: 'application/json',
+          Authorization: `Bearer ${userJWT}`,
+        },
+        params,
       })
-
       return result.data
     } catch (cause) {
       throw new HttpException(cause.response.data.error, cause.response.data.statusCode)
     }
   }
-
-  // async get(path: string, params: any, optional?: { userId?: string }) {
-  //   try {
-  //     const userJWT = this.jwt.get(optional.userId)
-  //     const result = await axios.get(`${this.apiPath}/${path}`, {
-  //       headers: {
-  //         Accept: 'application/json',
-  //         Authorization: `Bearer ${userJWT}`,
-  //       },
-  //       params,
-  //     })
-  //     return result.data
-  //   } catch (cause) {
-  //     throw new HttpException(cause.response.data.error, cause.response.data.statusCode)
-  //   }
-  // }
-
-  // async getToken(path: string, params: string, optional?: { userId?: string }) {
-  //   try {
-  //     const userJWT = this.jwt.get(optional.userId)
-  //     console.log(params)
-  //     const result = await axios.get(`${this.apiPath}/${path}`, {
-  //       headers: {
-  //         'x-dynamic-authorization': params,
-  //         Authorization: `Bearer ${userJWT}`,
-  //       },
-  //     })
-  //     return result.data
-  //   } catch (cause) {
-  //     throw new HttpException(cause.response.data.error, cause.response.data.statusCode)
-  //   }
-  // }
 
   async post(path: string, body: any, optional?: { userId: string }) {
     try {
