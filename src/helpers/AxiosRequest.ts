@@ -34,38 +34,6 @@ export class Request {
     }
   }
 
-  // async get(path: string, params: any, optional?: { userId?: string }) {
-  //   try {
-  //     const userJWT = this.jwt.get(optional.userId)
-  //     const result = await axios.get(`${this.apiPath}/${path}`, {
-  //       headers: {
-  //         Accept: 'application/json',
-  //         Authorization: `Bearer ${userJWT}`,
-  //       },
-  //       params,
-  //     })
-  //     return result.data
-  //   } catch (cause) {
-  //     throw new HttpException(cause.response.data.error, cause.response.data.statusCode)
-  //   }
-  // }
-
-  // async getToken(path: string, params: string, optional?: { userId?: string }) {
-  //   try {
-  //     const userJWT = this.jwt.get(optional.userId)
-  //     console.log(params)
-  //     const result = await axios.get(`${this.apiPath}/${path}`, {
-  //       headers: {
-  //         'x-dynamic-authorization': params,
-  //         Authorization: `Bearer ${userJWT}`,
-  //       },
-  //     })
-  //     return result.data
-  //   } catch (cause) {
-  //     throw new HttpException(cause.response.data.error, cause.response.data.statusCode)
-  //   }
-  // }
-
   async post(path: string, body: any, optional?: { userId: string }) {
     try {
       const userJWT = this.jwt.get(optional.userId)
