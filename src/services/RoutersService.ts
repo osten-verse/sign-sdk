@@ -24,7 +24,7 @@ export class Routers extends Request {
   async listEnvelope(
     params: {
       query?: Query<EnvelopeEntity>
-      includes: Array<string>
+      includes?: Array<string>
       page?: number
       pageSize?: number
     },
@@ -54,7 +54,7 @@ export class Routers extends Request {
   async listEnvelopeSigners(
     params: {
       query?: Query<EnvelopeEntity>
-      includes: Array<string>
+      includes?: Array<string>
       page?: number
       pageSize?: number
     },
@@ -84,7 +84,7 @@ export class Routers extends Request {
   async listEnvelopesDocuments(
     params: {
       query?: Query<EnvelopeEntity>
-      includes: Array<string>
+      includes?: Array<string>
       page?: number
       pageSize?: number
     },
@@ -113,7 +113,7 @@ export class Routers extends Request {
    */
   async getEnvelopeById(
     params: {
-      query?: Query<{ id: string }>
+      query: Query<{ id: string }>
     },
     options?: {
       userId?: string
@@ -177,7 +177,7 @@ export class Routers extends Request {
   async listDocument(
     params: {
       query?: Query<DocumentsEntity>
-      includes: Array<string>
+      includes?: Array<string>
       page?: number
       pageSize?: number
     },

@@ -24,7 +24,7 @@ export class JWTToken {
   get(userId?: string) {
     const id = userId || this.defaultUserId
     if (this.defaultTokens[id]) return this.defaultTokens[id]
-    this.defaultTokens[id] = this.generate(this.defaultUserId, 'notExpired')
+    this.defaultTokens[id] = this.generate(userId || this.defaultUserId, 'notExpired')
     return this.defaultTokens[id]
   }
 }

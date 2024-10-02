@@ -20,12 +20,12 @@ export type EnvelopeSignerEntity = {
   envelopeId: string
   signerId: string
   order: number
-  signatureType: string
+  signatureType: SignatureType
   requirePersonalDocument: boolean
   requireEmailToken: boolean
   requireRubric: boolean
   requireSignature: boolean
-  status: SignatureType
+  status: SignatureStatus
   log: string
   createdAt: string
   updatedAt: string
@@ -67,7 +67,7 @@ export type EnvelopeSignerQuery = {
 
 type CreateData = {
   order: number
-  signatureType: string
+  signatureType: SignatureType
   requirePersonalDocument: boolean
   requireEmailToken: boolean
   email: string

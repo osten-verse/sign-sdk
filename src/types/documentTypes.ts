@@ -43,10 +43,7 @@ enum CreatedFrom {
 
 type CreateData = {
   alias: string
-  envelopId?: string
-  companyId: string
   createdFrom: CreatedFrom
-  url: string
 }
 
 export type CreateDocumentData = {
