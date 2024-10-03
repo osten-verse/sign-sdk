@@ -1,3 +1,5 @@
+import { BaseResponse } from './BaseResponse'
+
 export enum EnvelopStatus {
   WAITING = 'WAITING_SIGNATURE',
   COMPLETED = 'COMPLETED',
@@ -10,21 +12,22 @@ export enum EnvelopStatus {
 }
 
 export type EnvelopeEntity = {
-  id?: string
-  userId?: string
-  companyId?: string
-  title?: string
-  description?: string
-  status?: EnvelopStatus
-  expiredAt?: string
-  createdAt?: string
-  updatedAt?: string
-}
-
-export type CreateEnvelopeData = {
+  id: string
+  userId: string
+  companyId: string
   title: string
   description: string
+  status: EnvelopStatus
   expiredAt: string
+  createdAt: string
+  updatedAt: string
+}
+
+export type CreateEnvelopeType = {
+  title: string
+  description: string
+  // expiredAt must be a date
+  expiredAt?: string
 }
 
 export type CloseEnvelopeData = {
@@ -59,4 +62,30 @@ export type EnvelopeQuery = {
   }
   page?: number
   pageSize?: number
+}
+
+export type ResponseListEnvelopeDTO = BaseResponse & {
+  envelopes: Array<EnvelopeEntity>
+}
+
+export type ResponseCreateDocument = EnvelopeEntity
+
+export type ResponseCloseEnvelope = {
+  id: string
+  companyId: null
+  status: EnvelopStatus
+  expiredAt: null
+  updatedAt: string
+}
+
+export type ResponseCancelEnvelope = {
+  id: string
+  userId: string
+  companyId: string
+  title: string
+  description: string
+  status: EnvelopStatus
+  expiredAt: string
+  createdAt: string
+  updatedAt: string
 }
