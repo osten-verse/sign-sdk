@@ -1,13 +1,41 @@
-type CreateAndRemoveData = {
+export type ManageDocumentInEnvelopeData = {
   id: string
 }
 
-type CreateAndRemoveEnvelopeDocument = {
+type ManageDocumentInEnvelope = {
   envelopeId: string
-  documents: Array<CreateAndRemoveData>
+  documents: Array<ManageDocumentInEnvelopeData>
 }
 
-export type CreateAndRemoveEnvelopeDocumentType = {
-  soft: boolean
-  data: Array<CreateAndRemoveEnvelopeDocument>
+export type ManageEnvelopeDocumentType = {
+  soft?: boolean
+  data: Array<ManageDocumentInEnvelope>
+}
+
+type DocumentInEnvelope = {
+  envelopeId: string
+  originalDocumentId: string
+  documentWithoutSummaryId: null
+  documentWithSummaryId: null
+  createdAt: string
+}
+
+export type AddDocumentInEnvelope = {
+  entities: Array<DocumentInEnvelope>
+  totalElements: number
+  rejectedInputs: Array<any>
+}
+
+type DeleteDocInEnvelope = {
+  envelopeId: string
+  originalDocumentId: string
+  documentWithoutSummaryId: null
+  documentWithSummaryId: null
+  createdAt: string
+}
+
+export type RemoveDocumentInEnvelope = {
+  entities: Array<DeleteDocInEnvelope>
+  totalElements: number
+  rejectedInputs: Array<any>
 }

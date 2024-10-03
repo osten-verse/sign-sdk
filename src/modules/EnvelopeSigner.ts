@@ -17,6 +17,6 @@ class Signer {
   constructor(private readonly routers: Routers) {}
 
   remove() {
-    this.routers.deleteEnvelopeSigner([{ envelopeId: this.signer.envelopeId, data: [{ signerId: this.signer.id }] }])
+    this.routers.deleteEnvelopeSigners([{ envelopeId: this.signer.envelopeId, data: [{ signerId: this.signer.id }] }])
   }
 }

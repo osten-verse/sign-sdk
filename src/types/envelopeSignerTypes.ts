@@ -65,7 +65,7 @@ export type EnvelopeSignerQuery = {
   pageSize?: number
 }
 
-type CreateData = {
+export type CreateData = {
   order: number
   signatureType: SignatureType
   requirePersonalDocument: boolean
@@ -79,7 +79,7 @@ export type CreateEnvelopeSignerData = {
   envelopeId: string
 }
 
-type DeleteData = {
+export type DeleteData = {
   signerId: string
 }
 
