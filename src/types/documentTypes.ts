@@ -1,3 +1,5 @@
+import { BaseResponse } from './BaseResponse'
+
 export type DocumentsEntity = {
   id: string
   envelopId: string
@@ -36,17 +38,19 @@ export type DocumentQuery = {
   pageSize?: number
 }
 
-enum CreatedFrom {
-  API = 'API',
-  UI = 'UI',
-}
-
-type CreateData = {
+export type CreateDocumentType = {
   alias: string
-  createdFrom: CreatedFrom
 }
 
-export type CreateDocumentData = {
-  soft: boolean
-  data: Array<CreateData>
+export type ResponseListDocumentDTO = BaseResponse & {
+  documents: Array<DocumentsEntity>
+}
+
+export type ResponseCreateDocument = {
+  id: string
+  userId: string
+  alias: string
+  url: string
+  createdFrom: string
+  companyId: string
 }

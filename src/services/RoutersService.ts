@@ -1,14 +1,35 @@
 import { Query } from '@duaneoli/typeorm-nest-joi-parse'
 import { Request } from '../helpers/AxiosRequest'
-import { CreateAndRemoveEnvelopeDocumentType } from '../types/envelopeDocumentTypes'
 import {
+  AddDocumentInEnvelope,
+  ManageDocumentInEnvelopeData,
+  ManageEnvelopeDocumentType,
+  RemoveDocumentInEnvelope,
+} from '../types/envelopeDocumentTypes'
+import {
+  CreateData,
   CreateEnvelopeSignerData,
+  DeleteData,
   DeleteEnvelopeSignerData,
+  EnvelopeSignerEntity,
   ResendNotificationEnvelopeSigner,
 } from '../types/envelopeSignerTypes'
-import { CancelEnvelopeData, CloseEnvelopeData, CreateEnvelopeData, EnvelopeEntity } from '../types/envelopeTypes'
-import { CreateTagData, DeleteTagData } from '../types/tagTypes'
-import { CreateDocumentData, DocumentsEntity } from './../types/documentTypes'
+import {
+  CancelEnvelopeData,
+  CloseEnvelopeData,
+  CreateEnvelopeType,
+  EnvelopeEntity,
+  ResponseCancelEnvelope,
+  ResponseCloseEnvelope,
+  ResponseListEnvelopeDTO,
+} from '../types/envelopeTypes'
+import { CreateTag, CreateTagData, DeleteTagData, ResponseTag } from '../types/tagTypes'
+import {
+  CreateDocumentType,
+  DocumentsEntity,
+  ResponseCreateDocument,
+  ResponseListDocumentDTO,
+} from './../types/documentTypes'
 
 export class Routers extends Request {
   constructor(publicKey: string, defaultUserId: string, secretKey: string, apiPath?: string) {
@@ -21,8 +42,8 @@ export class Routers extends Request {
    * @param options - extra information, such as a ID of the user logged into the system in this case
    * @returns - an array of envelopes
    */
-  async listEnvelope(
-    params: {
+  async listEnvelopes(
+    params?: {
       query?: Query<EnvelopeEntity>
       includes?: Array<string>
       page?: number
@@ -31,12 +52,12 @@ export class Routers extends Request {
     options?: {
       userId?: string
     },
-  ) {
+  ): Promise<ResponseListEnvelopeDTO> {
     return this.get(
       'envelope',
       {
-        filters: params?.query.filters.stringify().replace('filters=', ''),
-        sortBy: params?.query.sortBy.stringify().replace('sortBy=', ''),
+        filters: params?.query?.filters.stringify(),
+        sortBy: params?.query?.sortBy.stringify(),
         includes: params?.includes,
         page: params?.page,
         pageSize: params?.pageSize,
@@ -61,12 +82,12 @@ export class Routers extends Request {
     options?: {
       userId?: string
     },
-  ) {
+  ): Promise<EnvelopeSignerEntity> {
     return this.get(
       'envelope',
       {
-        filters: params?.query.filters.stringify().replace('filters=', ''),
-        sortBy: params?.query.sortBy.stringify().replace('sortBy=', ''),
+        filters: params?.query?.filters.stringify(),
+        sortBy: params?.query?.sortBy.stringify(),
         includes: ['envelopeSigners', 'envelopeSigners.signer'],
         page: params?.page,
         pageSize: params?.pageSize,
@@ -95,8 +116,8 @@ export class Routers extends Request {
     return this.get(
       'envelope',
       {
-        filters: params?.query.filters.stringify().replace('filters=', ''),
-        sortBy: params?.query.sortBy.stringify().replace('sortBy=', ''),
+        filters: params?.query.filters.stringify(),
+        sortBy: params?.query.sortBy.stringify(),
         includes: ['envelopeDocuments', 'envelopeDocuments.document'],
         page: params?.page,
         pageSize: params?.pageSize,
@@ -122,7 +143,7 @@ export class Routers extends Request {
     return this.get(
       'envelope',
       {
-        filters: params?.query.filters.stringify().replace('filters=', ''),
+        filters: params?.query.filters.stringify(),
       } as any,
       options,
     )
@@ -134,8 +155,20 @@ export class Routers extends Request {
    * @param userId - ID of the user logged into the system
    * @returns - an array of created envelopes
    */
-  async createEnvelope(body: Array<CreateEnvelopeData>, userId?: string) {
+  async createEnvelopes(body: Array<CreateEnvelopeType>, userId?: string) {
     return this.post('envelope', body, { userId })
+  }
+
+  /**
+   * Method to create an array of envelopes
+   * @param body - contains the necessary information to create an array of envelopes
+   * @param userId - ID of the user logged into the system
+   * @returns - an array of created envelopes
+   */
+  async createEnvelope(body: CreateEnvelopeType, options: { userId?: string } = {}): Promise<ResponseCreateDocument> {
+    const { userId } = options
+    const response = await this.post('envelope', { data: [body] }, { userId })
+    return response.envelopes[0]
   }
 
   /**
@@ -144,8 +177,18 @@ export class Routers extends Request {
    * @param userId - ID of the user logged into the system
    * @returns - an array of closed envelopes
    */
-  async closeEnvelope(body: Array<CloseEnvelopeData>, userId?: string) {
+  async closeEnvelopes(body: Array<CloseEnvelopeData>, userId?: string) {
     return this.put('envelope/close', body, { userId })
+  }
+
+  async closeEnvelope(
+    envelopeId: string,
+    options: { userId?: string; soft?: boolean } = {},
+  ): Promise<ResponseCloseEnvelope> {
+    const { userId, soft } = options
+
+    const response = await this.put('envelope/close', { data: [{ id: envelopeId }] }, { userId })
+    return response.envelopes[0]
   }
 
   /**
@@ -154,8 +197,13 @@ export class Routers extends Request {
    * @param userId - ID of the user logged into the system
    * @returns - an array of canceled envelopes
    */
-  async cancelEnvelope(body: Array<CancelEnvelopeData>, userId?: string) {
+  async cancelEnvelopes(body: Array<CancelEnvelopeData>, userId?: string) {
     return this.put('envelope/cancel', body, { userId })
+  }
+
+  async cancelEnvelope(envelopeId: string, userId?: string): Promise<ResponseCancelEnvelope> {
+    const response = await this.put('envelope/cancel', { data: [{ id: envelopeId }] }, { userId })
+    return response.envelopes[0]
   }
 
   /**
@@ -164,8 +212,35 @@ export class Routers extends Request {
    * @param userId - ID of the user logged into the system
    * @returns - an array of envelope IDs with with an array of their corresponding document IDs
    */
-  async createAndRemoveDocument(method: 'set' | 'remove', body: CreateAndRemoveEnvelopeDocumentType, userId?: string) {
+  async manageDocumentsInEnvelopes(method: 'set' | 'remove', body: ManageEnvelopeDocumentType, userId?: string) {
     return this.post(`envelope/${method}/document`, body, { userId })
+  }
+
+  async addDocumentsInEnvelopes(body: ManageEnvelopeDocumentType, userId?: string) {
+    return this.post(`envelope/set/document`, body, { userId })
+  }
+
+  async removeDocumentsInEnvelopes(body: ManageEnvelopeDocumentType, userId?: string) {
+    return this.post(`envelope/remove/document`, body, { userId })
+  }
+
+  async addDocumentsInEnvelope(
+    envelopeId: string,
+    documents: Array<ManageDocumentInEnvelopeData>,
+    options: { userId?: string; soft?: boolean } = {},
+  ): Promise<AddDocumentInEnvelope> {
+    const { userId, soft } = options
+    const response = await this.post(`envelope/set/document`, { data: [{ envelopeId, documents }], soft }, { userId })
+    return response
+  }
+
+  async removeDocumentsInEnvelope(
+    envelopeId: string,
+    documents: Array<ManageDocumentInEnvelopeData>,
+    options: { userId?: string; soft?: boolean } = {},
+  ): Promise<RemoveDocumentInEnvelope> {
+    const { userId, soft } = options
+    return this.post(`envelope/remove/document`, { data: [{ envelopeId, documents }], soft }, { userId })
   }
 
   /**
@@ -174,8 +249,8 @@ export class Routers extends Request {
    * @param options - extra information, such as a ID of the user logged into the system in this case
    * @returns - an array of documents
    */
-  async listDocument(
-    params: {
+  async listDocuments(
+    params?: {
       query?: Query<DocumentsEntity>
       includes?: Array<string>
       page?: number
@@ -184,12 +259,12 @@ export class Routers extends Request {
     options?: {
       userId?: string
     },
-  ) {
+  ): Promise<ResponseListDocumentDTO> {
     return this.get(
       'documents',
       {
-        filters: params?.query.filters.stringify().replace('filters=', ''),
-        sortBy: params?.query.sortBy.stringify().replace('sortBy=', ''),
+        filters: params?.query?.filters.stringify(),
+        sortBy: params?.query?.sortBy.stringify(),
         includes: params?.includes,
         page: params?.page,
         pageSize: params?.pageSize,
@@ -219,13 +294,29 @@ export class Routers extends Request {
   }
 
   /**
+   * Method to create documents
+   * @param body - contains the necessary information to create an array of documents
+   * @param userId - ID of the user logged into the system
+   * @returns - an array of created documents
+   */
+  async createDocuments(data: Array<CreateDocumentType>, options: { soft?: boolean; userId?: string } = {}) {
+    const { userId, soft } = options
+    return this.post('documents', { data, soft }, { userId })
+  }
+
+  /**
    * Method to create a document
    * @param body - contains the necessary information to create an array of documents
    * @param userId - ID of the user logged into the system
    * @returns - an array of created documents
    */
-  async createDocument(body: Array<CreateDocumentData>, userId?: string) {
-    return this.post('documents', body, { userId })
+  async createDocument(
+    document: CreateDocumentType,
+    options: { soft?: boolean; userId?: string } = {},
+  ): Promise<ResponseCreateDocument> {
+    const { userId, soft } = options
+    const response = await this.post('documents', { data: [document], soft }, { userId })
+    return response.documents[0]
   }
 
   /**
@@ -234,8 +325,26 @@ export class Routers extends Request {
    * @param userId - ID of the user logged into the system
    * @returns - an array of envelopes Ids and another array with their signers ids
    */
-  async createEnvelopeSigner(body: Array<CreateEnvelopeSignerData>, userId?: string) {
+  async createSignersInEnvelopes(body: Array<CreateEnvelopeSignerData>, userId?: string) {
     return this.post('envelope-signer', body, { userId })
+  }
+
+  /**
+   * Method to add signer to envelope
+   * @param envelopeId - The ID of envelope
+   * @param signer - Infos about the signer who gonna be insert in envelope
+   * @param userId - ID of the user logged into the system
+   * @returns - an array of envelopes Ids and another array with their signers ids
+   */
+  async createEnvelopeSigner(
+    envelopeId: string,
+    signer: CreateData,
+    options: { soft?: boolean; userId?: string } = {},
+  ): Promise<EnvelopeSignerEntity> {
+    const { userId, soft } = options
+
+    const response = await this.post('envelope-signer', { data: [{ ...signer }], envelopeId }, { userId })
+    return response.envelopeSigners[0]
   }
 
   /**
@@ -244,8 +353,19 @@ export class Routers extends Request {
    * @param userId - ID of the user logged into the system
    * @returns - an array of envelopes Ids and another array with their signers ids
    */
-  async deleteEnvelopeSigner(body: Array<DeleteEnvelopeSignerData>, userId?: string) {
+  async deleteEnvelopeSigners(body: Array<DeleteEnvelopeSignerData>, userId?: string) {
     return this.delete('envelope-signer', body, { userId })
+  }
+
+  async deleteEnvelopeSigner(
+    envelopeId: string,
+    signer: DeleteData,
+    options: { soft?: boolean; userId?: string } = {},
+  ): Promise<EnvelopeSignerEntity> {
+    const { userId, soft } = options
+
+    const response = await this.delete('envelope-signer', { data: [{ ...signer }], envelopeId }, { userId })
+    return response.envelopeSigners[0]
   }
 
   /**
@@ -264,8 +384,19 @@ export class Routers extends Request {
    * @param userId - ID of the user logged into the system
    * @returns - an array of envelopes Ids and another array with their tag information
    */
-  async createTag(body: Array<CreateTagData>, userId?: string) {
+  async createTags(body: Array<CreateTagData>, userId?: string) {
     return this.post('tags', body, { userId })
+  }
+
+  async createTag(
+    envelopeId: string,
+    tag: CreateTag,
+    options: { soft?: boolean; userId?: string } = {},
+  ): Promise<ResponseTag> {
+    const { userId, soft } = options
+
+    const response = await this.post('tags', { data: [{ ...tag }], envelopeId }, { userId })
+    return response.tags[0]
   }
 
   /**
@@ -274,7 +405,18 @@ export class Routers extends Request {
    * @param userId - ID of the user logged into the system
    * @returns - an array of envelopes Ids and another array with their tags IDs
    */
-  async deleteTag(body: Array<DeleteTagData>, userId?: string) {
+  async deleteTags(body: Array<DeleteTagData>, userId?: string) {
     return this.delete('tags', body, { userId })
+  }
+
+  async deleteTag(
+    envelopeId: string,
+    tagId: string,
+    options: { soft?: boolean; userId?: string } = {},
+  ): Promise<ResponseTag> {
+    const { userId, soft } = options
+
+    const response = await this.delete('tags', { data: [{ id: tagId }], envelopeId }, { userId })
+    return response.tags[0]
   }
 }

@@ -1,4 +1,4 @@
-enum ElementType {
+export enum ElementType {
   SIGNATURE = 'SIGNATURE',
   RUBRIC = 'RUBRIC',
   SIGNATURE_DATETIME = 'SIGNATURE_DATETIME',
@@ -54,9 +54,9 @@ export type TagQuery = {
   pageSize?: number
 }
 
-type CreateData = {
-  signerId: string
-  documentId: string
+export type CreateTag = {
+  envelopeSignerId: string
+  envelopeDocumentsId: string
   angle: number
   elementType: ElementType
   content: string
@@ -66,7 +66,7 @@ type CreateData = {
 }
 
 export type CreateTagData = {
-  data: Array<CreateData>
+  data: Array<CreateTag>
   envelopeId: string
 }
 
@@ -77,4 +77,19 @@ type DeleteData = {
 export type DeleteTagData = {
   data: Array<DeleteData>
   envelopeId: string
+}
+
+export type ResponseTag = {
+  id: string
+  envelopeSignerId: string
+  envelopeDocumentsId: string
+  envelopeId: string
+  angle: number
+  elementType: ElementType
+  content: string
+  axisX: number
+  axisY: number
+  page: number
+  createdAt: string
+  updatedAt: string
 }
