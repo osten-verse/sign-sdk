@@ -54,7 +54,7 @@ export class Routers extends Request {
     },
   ): Promise<ResponseListEnvelopeDTO> {
     return this.get(
-      'envelope',
+      'envelopes',
       {
         filters: params?.query?.filters.stringify(),
         sortBy: params?.query?.sortBy.stringify(),
@@ -84,7 +84,7 @@ export class Routers extends Request {
     },
   ): Promise<EnvelopeSignerEntity> {
     return this.get(
-      'envelope',
+      'envelopes',
       {
         filters: params?.query?.filters.stringify(),
         sortBy: params?.query?.sortBy.stringify(),
@@ -114,7 +114,7 @@ export class Routers extends Request {
     },
   ) {
     return this.get(
-      'envelope',
+      'envelopes',
       {
         filters: params?.query.filters.stringify(),
         sortBy: params?.query.sortBy.stringify(),
@@ -141,7 +141,7 @@ export class Routers extends Request {
     },
   ) {
     return this.get(
-      'envelope',
+      'envelopes',
       {
         filters: params?.query.filters.stringify(),
       } as any,
@@ -156,7 +156,7 @@ export class Routers extends Request {
    * @returns - an array of created envelopes
    */
   async createEnvelopes(body: Array<CreateEnvelopeType>, userId?: string) {
-    return this.post('envelope', body, { userId })
+    return this.post('envelopes', body, { userId })
   }
 
   /**
@@ -167,7 +167,7 @@ export class Routers extends Request {
    */
   async createEnvelope(body: CreateEnvelopeType, options: { userId?: string } = {}): Promise<ResponseCreateDocument> {
     const { userId } = options
-    const response = await this.post('envelope', { data: [body] }, { userId })
+    const response = await this.post('envelopes', { data: [body] }, { userId })
     return response.envelopes[0]
   }
 
@@ -178,7 +178,7 @@ export class Routers extends Request {
    * @returns - an array of closed envelopes
    */
   async closeEnvelopes(body: Array<CloseEnvelopeData>, userId?: string) {
-    return this.put('envelope/close', body, { userId })
+    return this.put('envelopes/close', body, { userId })
   }
 
   async closeEnvelope(
@@ -187,7 +187,7 @@ export class Routers extends Request {
   ): Promise<ResponseCloseEnvelope> {
     const { userId, soft } = options
 
-    const response = await this.put('envelope/close', { data: [{ id: envelopeId }] }, { userId })
+    const response = await this.put('envelopes/close', { data: [{ id: envelopeId }] }, { userId })
     return response.envelopes[0]
   }
 
@@ -198,11 +198,11 @@ export class Routers extends Request {
    * @returns - an array of canceled envelopes
    */
   async cancelEnvelopes(body: Array<CancelEnvelopeData>, userId?: string) {
-    return this.put('envelope/cancel', body, { userId })
+    return this.put('envelopes/cancel', body, { userId })
   }
 
   async cancelEnvelope(envelopeId: string, userId?: string): Promise<ResponseCancelEnvelope> {
-    const response = await this.put('envelope/cancel', { data: [{ id: envelopeId }] }, { userId })
+    const response = await this.put('envelopes/cancel', { data: [{ id: envelopeId }] }, { userId })
     return response.envelopes[0]
   }
 
@@ -213,15 +213,15 @@ export class Routers extends Request {
    * @returns - an array of envelope IDs with with an array of their corresponding document IDs
    */
   async manageDocumentsInEnvelopes(method: 'set' | 'remove', body: ManageEnvelopeDocumentType, userId?: string) {
-    return this.post(`envelope/${method}/document`, body, { userId })
+    return this.post(`envelopes/${method}/documents`, body, { userId })
   }
 
   async addDocumentsInEnvelopes(body: ManageEnvelopeDocumentType, userId?: string) {
-    return this.post(`envelope/set/document`, body, { userId })
+    return this.post(`envelopes/set/documents`, body, { userId })
   }
 
   async removeDocumentsInEnvelopes(body: ManageEnvelopeDocumentType, userId?: string) {
-    return this.post(`envelope/remove/document`, body, { userId })
+    return this.post(`envelopes/remove/documents`, body, { userId })
   }
 
   async addDocumentsInEnvelope(
@@ -230,7 +230,7 @@ export class Routers extends Request {
     options: { userId?: string; soft?: boolean } = {},
   ): Promise<AddDocumentInEnvelope> {
     const { userId, soft } = options
-    const response = await this.post(`envelope/set/document`, { data: [{ envelopeId, documents }], soft }, { userId })
+    const response = await this.post(`envelopes/set/documents`, { data: [{ envelopeId, documents }], soft }, { userId })
     return response
   }
 
@@ -240,7 +240,7 @@ export class Routers extends Request {
     options: { userId?: string; soft?: boolean } = {},
   ): Promise<RemoveDocumentInEnvelope> {
     const { userId, soft } = options
-    return this.post(`envelope/remove/document`, { data: [{ envelopeId, documents }], soft }, { userId })
+    return this.post(`envelopes/remove/documents`, { data: [{ envelopeId, documents }], soft }, { userId })
   }
 
   /**
@@ -280,7 +280,7 @@ export class Routers extends Request {
    * @returns - an array of tokens
    */
   async getTokenDocumentsUrl(body: Array<{ id: string }>, userId?: string) {
-    return this.post('envelope/document-url', body, { userId })
+    return this.post('envelopes/documents-url', body, { userId })
   }
 
   /**
@@ -326,7 +326,7 @@ export class Routers extends Request {
    * @returns - an array of envelopes Ids and another array with their signers ids
    */
   async createSignersInEnvelopes(body: Array<CreateEnvelopeSignerData>, userId?: string) {
-    return this.post('envelope-signer', body, { userId })
+    return this.post('envelope-signers', body, { userId })
   }
 
   /**
@@ -343,7 +343,7 @@ export class Routers extends Request {
   ): Promise<EnvelopeSignerEntity> {
     const { userId, soft } = options
 
-    const response = await this.post('envelope-signer', { data: [{ ...signer }], envelopeId }, { userId })
+    const response = await this.post('envelope-signers', { data: [{ ...signer }], envelopeId }, { userId })
     return response.envelopeSigners[0]
   }
 
@@ -354,7 +354,7 @@ export class Routers extends Request {
    * @returns - an array of envelopes Ids and another array with their signers ids
    */
   async deleteEnvelopeSigners(body: Array<DeleteEnvelopeSignerData>, userId?: string) {
-    return this.delete('envelope-signer', body, { userId })
+    return this.delete('envelope-signers', body, { userId })
   }
 
   async deleteEnvelopeSigner(
@@ -364,7 +364,7 @@ export class Routers extends Request {
   ): Promise<EnvelopeSignerEntity> {
     const { userId, soft } = options
 
-    const response = await this.delete('envelope-signer', { data: [{ ...signer }], envelopeId }, { userId })
+    const response = await this.delete('envelope-signers', { data: [{ ...signer }], envelopeId }, { userId })
     return response.envelopeSigners[0]
   }
 
@@ -375,7 +375,7 @@ export class Routers extends Request {
    * @returns - empty
    */
   async resendNotification(body: ResendNotificationEnvelopeSigner, userId?: string) {
-    return this.post('envelope-signer/resend-notification', body, { userId })
+    return this.post('envelope-signers/resend-notification', body, { userId })
   }
 
   /**
